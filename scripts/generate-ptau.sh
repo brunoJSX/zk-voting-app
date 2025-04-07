@@ -7,6 +7,17 @@ YELLOW='\033[1;33m'
 BLUE='\033[0;34m'
 NC='\033[0m'
 
+# Carrega variáveis do .env
+if [ -f ".env" ]; then
+    echo -e "${BLUE}📝 Carregando variáveis do .env...${NC}"
+    set -a
+    source .env
+    set +a
+else
+    echo -e "${RED}❌ Arquivo .env não encontrado${NC}"
+    exit 1
+fi
+
 echo -e "${BLUE}🚀 Iniciando geração do arquivo ptau...${NC}"
 
 # Cria diretório build se não existir
@@ -15,7 +26,7 @@ cd build
 
 # Fase 1: Gera o arquivo inicial
 echo -e "\n${YELLOW}📝 Fase 1: Gerando arquivo inicial...${NC}"
-snarkjs powersoftau new bn128 12 pot12_0000.ptau
+snarkjs ptn bn128 12 pot12_0000.ptau
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erro ao gerar arquivo inicial${NC}"
@@ -29,11 +40,18 @@ contribute() {
     local num=$3
     
     echo -e "\n${YELLOW}🔐 Contribuição $num${NC}"
-    echo -e "${BLUE}Digite algo aleatório (quanto mais aleatório melhor):${NC}"
-    read -p "> " entropy
     
-    echo "Contribuição $num - $(date) - $entropy" | \
-    snarkjs powersoftau contribute $input_file $output_file \
+    # Verifica se a variável de ambiente existe
+    local env_var="CONTRIBUTION_${num}"
+    if [ -z "${!env_var}" ]; then
+        echo -e "${RED}❌ Erro: Variável de ambiente CONTRIBUTION_${num} não definida${NC}"
+        echo -e "${BLUE}Por favor, defina a variável de ambiente antes de executar o script:${NC}"
+        echo -e "${YELLOW}export CONTRIBUTION_${num}=seu_valor_aleatorio${NC}"
+        exit 1
+    fi
+    
+    echo "Contribuição $num - $(date) - ${!env_var}" | \
+    snarkjs ptc $input_file $output_file \
     --name="Contribuição $num" -v
     
     if [ $? -ne 0 ]; then
@@ -50,7 +68,7 @@ contribute "pot12_0002.ptau" "pot12_0003.ptau" "3"
 
 # Verifica o protocolo
 echo -e "\n${YELLOW}🔍 Verificando o protocolo...${NC}"
-snarkjs powersoftau verify pot12_0003.ptau
+snarkjs ptv pot12_0003.ptau
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erro na verificação${NC}"
@@ -61,7 +79,7 @@ fi
 echo -e "\n${YELLOW}✨ Aplicando beacon aleatório...${NC}"
 # Gera um hash aleatório usando data e as contribuições anteriores
 random_hex=$(echo "$(date) $(cat pot12_0003.ptau | head -c 100)" | sha256sum | cut -d' ' -f1)
-snarkjs powersoftau beacon pot12_0003.ptau pot12_beacon.ptau $random_hex 10 -n="Beacon final"
+snarkjs ptb pot12_0003.ptau pot12_beacon.ptau $random_hex 10 -n="Beacon final"
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erro ao aplicar beacon${NC}"
@@ -70,7 +88,7 @@ fi
 
 # Prepara fase 2
 echo -e "\n${YELLOW}🎯 Preparando fase 2...${NC}"
-snarkjs powersoftau prepare phase2 pot12_beacon.ptau pot12_final.ptau -v
+snarkjs pt2 pot12_beacon.ptau pot12_final.ptau -v
 
 if [ $? -ne 0 ]; then
     echo -e "${RED}❌ Erro ao preparar fase 2${NC}"

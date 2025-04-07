@@ -1,5 +1,19 @@
 {
+  "scripts": {
+    "compile:contracts": "./scripts/compile-contracts.sh",
+    "setup:zkp": "./scripts/setup-zkp.sh",
+    "deploy": "npm run setup:zkp && npm run compile:contracts && ts-node scripts/deploy.ts"
+  },
   "dependencies": {
-    "circomlib": "^2.0.5"
+    "@openzeppelin/contracts": "^5.2.0",
+    "circomlib": "^2.0.5",
+    "dotenv": "^16.4.5",
+    "ethers": "^6.11.1"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "solc": "^0.8.29",
+    "ts-node": "^10.9.2",
+    "typescript": "~5.4.2"
   }
 }
