@@ -1,17 +1,29 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export interface ProofInput {
-  storedHash: string;
+  [key: string]: string;
   biometricInput: string;
-  [key: string]: string; // Index signature para compatibilidade com CircuitSignals
+  storedHash: string;
 }
 
 export interface ProofOutput {
-  proof: any; // Tipo específico do snarkjs
+  proof: {
+    pi_a: string[];
+    pi_b: string[][];
+    pi_c: string[];
+  };
   publicSignals: string[];
-  input: ProofInput;
 }
 
 export interface ZKVerificationResult {
-  isValid: boolean;
-  error?: string;
+  a: [string, string];
+  b: [[string, string], [string, string]];
+  c: [string, string];
+  publicSignals: [string, string];
+}
+
+export interface ZKProofHookResult {
+  generateProof: (secretInput: string, storedHash: bigint) => Promise<ZKVerificationResult>;
+  isGenerating: boolean;
+  error: string | null;
+  result: ZKVerificationResult | null;
 } 

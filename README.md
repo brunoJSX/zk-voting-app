@@ -1,63 +1,129 @@
-# ZK Voting App
+# Zero Knowledge Voting App
 
-Aplicação de votação utilizando Zero Knowledge Proofs (ZKP) para verificação biométrica segura.
+## 📌 Sumário
+- [🚀 Funcionalidades](#-funcionalidades)
+- [📋 Pré-requisitos](#-pré-requisitos)
+- [🔧 Instalação](#-instalação)
+- [🏗️ Compilação e Deploy](#-compilação-e-deploy)
+- [🔐 Setup ZKP](#-setup-zkp)
+- [📝 Contratos Deployados](#-contratos-deployados)
+- [🎯 Como Usar](#-como-usar)
+- [🔒 Segurança](#-segurança)
+- [📚 Tecnologias](#-tecnologias)
+- [📄 Licença](#-licença)
 
-## 🚀 Tecnologias
+Aplicação de votação com privacidade usando Zero Knowledge Proofs (ZKP) na BNB Smart Chain.
 
-- [Circom](https://docs.circom.io/) - Linguagem para circuitos ZKP
-- [SnarkJS](https://github.com/iden3/snarkjs) - Biblioteca JavaScript para ZKP
-- [React](https://reactjs.org/) - Framework frontend
-- [TypeScript](https://www.typescriptlang.org/) - Superset JavaScript tipado
-- [Vite](https://vitejs.dev/) - Build tool e dev server
+## 🚀 Funcionalidades
 
-## 📁 Estrutura do Projeto
+- Votação anônima usando ZKP
+- Verificação de identidade sem revelar dados pessoais
+- Interface web amigável
+- Contratos inteligentes na BSC Testnet
 
-```
-zk-voting-app/
-├── circuits/          # Circuitos Circom
-├── build/            # Arquivos compilados
-├── scripts/          # Scripts de automação
-└── frontend/         # Aplicação React
-```
+## 📋 Pré-requisitos
 
-## 🛠️ Setup do Projeto
+- Node.js (v18 ou superior)
+- npm ou yarn
+- Git
 
-1. Instale as dependências:
+## 🔧 Instalação
+
+1. Clone o repositório:
 ```bash
-# Na raiz do projeto
-npm install
+git clone https://github.com/brunoJSX/zk-voting-app.git
+cd zk-voting-app
+```
 
-# No diretório frontend
+2. Instale as dependências:
+```bash
+npm install
+```
+
+3. Configure o arquivo `.env`:
+```bash
+cp .env.example .env
+```
+Edite o arquivo `.env` com:
+- `RPC_URL`: URL do RPC da BSC Testnet
+- `PRIVATE_KEY`: Sua chave privada (sem 0x) - **Opcional se apenas usar os contratos existentes**
+- `BSCSCAN_API_KEY`: Chave da API do BscScan (opcional)
+
+## 🏗️ Compilação e Deploy
+
+### Opção 1: Usar contratos já deployados
+Se você quer apenas usar a aplicação, pode pular esta seção e usar os contratos já deployados na BSC Testnet.
+
+### Opção 2: Fazer deploy dos seus próprios contratos
+Se você quiser fazer deploy dos seus próprios contratos:
+
+1. Compile os circuitos ZK:
+```bash
+npm run compile:circuits
+```
+
+2. Compile os contratos:
+```bash
+npm run compile:contracts
+```
+
+3. Faça o deploy dos contratos:
+```bash
+npm run deploy
+```
+
+## 🔐 Setup ZKP
+
+Para gerar e verificar provas ZK, você precisa configurar o ambiente:
+
+1. Execute o setup ZKP:
+```bash
+npm run setup
+```
+
+Este comando irá:
+- Gerar as chaves de prova e verificação
+- Configurar o ambiente para gerar provas ZK
+- Copiar os arquivos necessários para o frontend
+
+**Nota**: Este passo é necessário mesmo se você estiver usando os contratos já deployados, pois é necessário para gerar as provas ZK que serão enviadas para os contratos.
+
+## 📝 Contratos Deployados
+
+Os contratos estão deployados na BSC Testnet:
+
+- **Verifier**: [0x8b0Eb8430EBBc1fb8f91eE962C3d1d4bF6f4F915](https://testnet.bscscan.com/address/0x8b0Eb8430EBBc1fb8f91eE962C3d1d4bF6f4F915)
+- **Voting**: [0x98B3aB676130dBaD61A519b3A44640a2E3E2Ccfa](https://testnet.bscscan.com/address/0x98B3aB676130dBaD61A519b3A44640a2E3E2Ccfa)
+
+## 🎯 Como Usar
+
+1. Inicie o frontend:
+```bash
 cd frontend
 npm install
-```
-
-2. Compile os circuitos:
-```bash
-chmod +x scripts/compile-circuits.sh
-./scripts/compile-circuits.sh
-```
-
-3. Execute o setup ZKP:
-```bash
-chmod +x scripts/setup-zkp.sh
-./scripts/setup-zkp.sh
-```
-
-4. Inicie o frontend:
-```bash
-cd frontend
 npm run dev
 ```
 
-## 🔒 Como Funciona
+2. Acesse a aplicação em `http://localhost:3000`
 
-1. O usuário fornece dados biométricos
-2. Os dados são hasheados usando Poseidon
-3. O circuito ZKP verifica a correspondência do hash
-4. Uma prova é gerada e verificada
-5. O resultado da verificação é exibido
+3. Para votar:
+   - Gere sua prova ZK
+   - Conecte sua carteira
+   - Vote usando a prova gerada
 
-## 📝 Licença
+## 🔒 Segurança
 
-Este projeto está sob a licença MIT. 
+- As provas ZK garantem que você é elegível para votar sem revelar sua identidade
+- Os votos são registrados na blockchain de forma anônima
+- Apenas o hash da sua identidade é armazenado
+
+## 📚 Tecnologias
+
+- **Frontend**: React, TypeScript, Tailwind CSS
+- **Blockchain**: BNB Smart Chain, Solidity
+- **ZKP**: Circom, SnarkJS
+- [Ethers.js](https://docs.ethers.io/v5/) - Biblioteca JavaScript para interagir com a blockchain
+
+## 📄 Licença
+
+Este projeto está licenciado sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes. 

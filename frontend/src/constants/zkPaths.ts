@@ -1,6 +1,6 @@
 export const ZK_PATHS = {
-  WASM: '/identityProof.wasm',
-  ZKEY: '/identityProof.zkey',
+  WASM_FILE: '/identityProof.wasm',
+  ZKEY_FILE: '/identityProof.zkey'
 } as const;
 
 export const TEST_VALUES = {
