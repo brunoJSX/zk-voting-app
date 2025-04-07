@@ -18,4 +18,4 @@ template IdentityProof() {
     isValid <== 1 - diff * diff;  // Será 1 se igual, 0 se diferente
 }
 
-component main = IdentityProof();
+component main { public [storedHash] } = IdentityProof();
