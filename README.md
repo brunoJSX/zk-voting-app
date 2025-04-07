@@ -5,7 +5,6 @@
 - [📋 Pré-requisitos](#-pré-requisitos)
 - [🔧 Instalação](#-instalação)
 - [🏗️ Compilação e Deploy](#-compilação-e-deploy)
-- [🔐 Setup ZKP](#-setup-zkp)
 - [📝 Contratos Deployados](#-contratos-deployados)
 - [🎯 Como Usar](#-como-usar)
 - [🔒 Segurança](#-segurança)
@@ -48,6 +47,7 @@ Edite o arquivo `.env` com:
 - `RPC_URL`: URL do RPC da BSC Testnet
 - `PRIVATE_KEY`: Sua chave privada (sem 0x) - **Opcional se apenas usar os contratos existentes**
 - `BSCSCAN_API_KEY`: Chave da API do BscScan (opcional)
+- `CONTRIBUTION_1`, `CONTRIBUTION_2`, `CONTRIBUTION_3`: Valores aleatórios para o setup ZKP
 
 ## 🏗️ Compilação e Deploy
 
@@ -55,12 +55,17 @@ Edite o arquivo `.env` com:
 Se você quer apenas usar a aplicação, pode pular esta seção e usar os contratos já deployados na BSC Testnet.
 
 ### Opção 2: Fazer deploy dos seus próprios contratos
-Se você quiser fazer deploy dos seus próprios contratos:
 
-1. Compile os circuitos ZK:
+1. Execute o setup do ambiente ZKP:
 ```bash
-npm run compile:circuits
+npm run setup:zkp
 ```
+
+Este comando irá:
+- Compilar os circuitos ZK
+- Gerar as chaves de prova e verificação
+- Configurar o ambiente para gerar provas ZK
+- Copiar os arquivos necessários para o frontend
 
 2. Compile os contratos:
 ```bash
@@ -72,21 +77,7 @@ npm run compile:contracts
 npm run deploy
 ```
 
-## 🔐 Setup ZKP
-
-Para gerar e verificar provas ZK, você precisa configurar o ambiente:
-
-1. Execute o setup ZKP:
-```bash
-npm run setup
-```
-
-Este comando irá:
-- Gerar as chaves de prova e verificação
-- Configurar o ambiente para gerar provas ZK
-- Copiar os arquivos necessários para o frontend
-
-**Nota**: Este passo é necessário mesmo se você estiver usando os contratos já deployados, pois é necessário para gerar as provas ZK que serão enviadas para os contratos.
+**Nota**: O comando `deploy` executará automaticamente o setup ZKP e a compilação dos contratos antes do deploy.
 
 ## 📝 Contratos Deployados
 
