@@ -18,8 +18,11 @@
     "baseUrl": ".",
     "paths": {
       "@/*": ["frontend/src/*"]
-    }
+    },
+    "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist"
   },
-  "include": ["frontend/src"],
+  "include": ["frontend/src", "scripts"],
   "references": [{ "path": "./frontend/tsconfig.node.json" }]
 } 
