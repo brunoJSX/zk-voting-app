@@ -26,30 +26,21 @@ export function VotingForm() {
       const proof = await generateProof(biometricInput, storedHash);
       if (!proof) throw new Error('Falha ao gerar prova');
 
-      // Envia o voto
-      console.log('📤 Enviando voto com prova:', {
+      console.log('Dados sendo enviados para o contrato:', {
         selectedOption,
-        a: proof.a,
-        b: proof.b,
-        c: proof.c,
-        publicSignals: proof.publicSignals
+        a: proof.a.map(String),
+        b: proof.b.map(row => row.map(String)),
+        c: proof.c.map(String),
+        publicSignals: proof.publicSignals.map(String)
       });
 
-      // Converte os valores para BigInt mantendo a estrutura exata
-      const a = [BigInt(proof.a[0]), BigInt(proof.a[1])] as [bigint, bigint];
-      const b: [[bigint, bigint], [bigint, bigint]] = [
-        [BigInt(proof.b[0][0]), BigInt(proof.b[0][1])],
-        [BigInt(proof.b[1][0]), BigInt(proof.b[1][1])]
-      ];
-      const c = [BigInt(proof.c[0]), BigInt(proof.c[1])] as [bigint, bigint];
-      const signals = [BigInt(proof.publicSignals[0]), BigInt(proof.publicSignals[1])] as [bigint, bigint];
-
+      // Usa os valores diretamente da prova
       await votingContract.vote(
         selectedOption,
-        a,
-        b,
-        c,
-        signals
+        proof.a,
+        proof.b,
+        proof.c,
+        proof.publicSignals
       );
 
       // Atualiza resultados

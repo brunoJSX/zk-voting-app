@@ -15,10 +15,10 @@ export interface ProofOutput {
 }
 
 export interface ZKVerificationResult {
-  a: [string, string];
-  b: [[string, string], [string, string]];
-  c: [string, string];
-  publicSignals: [string, string];
+  a: [bigint, bigint];
+  b: [[bigint, bigint], [bigint, bigint]];
+  c: [bigint, bigint];
+  publicSignals: [bigint, bigint];
 }
 
 export interface ZKProofHookResult {

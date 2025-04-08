@@ -63,19 +63,27 @@ export function useContract() {
       // Instancia os contratos
       const votingContract = new ethers.Contract(
         VOTING_ADDRESS,
-        ['function storedHashes(address) view returns (uint256)',
-         'function hasVoted(address) view returns (bool)',
-         'function yesVotes() view returns (uint256)',
-         'function noVotes() view returns (uint256)',
-         'function registerVoter(address,uint256)',
-         'function vote(uint8,uint256,uint256,uint256[2],uint256[2][2],uint256[2])',
-         'function getResults() view returns (uint256,uint256)'],
+        [
+          'event VoterRemoved(address voter)',
+          'function storedHashes(address) view returns (uint256)',
+          'function hasVoted(address) view returns (bool)',
+          'function yesVotes() view returns (uint256)',
+          'function noVotes() view returns (uint256)',
+          'function voterChoice(address) view returns (uint8)',
+          'function verifier() view returns (address)',
+          'function registerVoter(address _voter, uint256 _storedHash) external',
+          'function vote(uint8 _vote, uint[2] a, uint[2][2] b, uint[2] c, uint[2] publicSignals) external',
+          'function getResults() view returns (uint256 yes, uint256 no)',
+          'function unregisterCurrentVoter() external'
+        ],
         signer
       ) as unknown as VotingContract;
 
       const verifierContract = new ethers.Contract(
         VERIFIER_ADDRESS,
-        ['function verifyProof(uint256[2],uint256[2][2],uint256[2],uint256[1]) view returns (bool)'],
+        [
+          'function verifyProof(uint[2] _pA, uint[2][2] _pB, uint[2] _pC, uint[2] _pubSignals) public view returns (bool)'
+        ],
         signer
       ) as unknown as VerifierContract;
 

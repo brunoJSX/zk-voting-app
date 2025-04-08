@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.29;
+pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./Verifier.sol";
@@ -44,25 +44,19 @@ contract Voting is Ownable {
     // Realiza o voto (com prova ZK)
     function vote(
         VoteOption _vote,
-        uint[2] memory a,
-        uint[2][2] memory b,
-        uint[2] memory c,
-        uint[2] memory publicSignals
+        uint[2] calldata a,
+        uint[2][2] calldata b,
+        uint[2] calldata c,
+        uint[2] calldata publicSignals
     ) external {
-        require(!hasVoted[msg.sender], "Ja votou");
-        require(_vote == VoteOption.Yes || _vote == VoteOption.No, "Voto invalido");
-
         // Verifica se isValid é 1 (prova correta)
         require(publicSignals[0] == 1, "Prova invalida: biometria incorreta");
 
-        // O storedHash está em publicSignals[1]
-        uint256 storedHash = publicSignals[1];
-        
-        // Garante que o storedHash nos publicSignals é o mesmo do usuário
-        require(storedHashes[msg.sender] == storedHash, "Hash incorreto");
-
-        // Verifica a prova ZK
+        // Verifica a prova ZK primeiro
         require(verifier.verifyProof(a, b, c, publicSignals), "Prova ZK invalida");
+
+        require(!hasVoted[msg.sender], "Ja votou");
+        require(_vote == VoteOption.Yes || _vote == VoteOption.No, "Voto invalido");
 
         // Marca como votado e salva a escolha
         hasVoted[msg.sender] = true;
